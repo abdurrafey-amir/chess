@@ -20,3 +20,6 @@ class Game:
                 
                 # drawing the squares
                 pygame.draw.rect(surface, color, rect)
+
+    def show_pieces(self, surface):
+        pass
