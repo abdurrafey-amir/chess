@@ -35,13 +35,44 @@ class Board:
                     move = Move(initial, final)
                     piece.add_move(move)
 
+    def pawn_moves(self, piece, row, col):
+        # if piece.moved:
+        #     steps = 1
+        # else:
+        #     steps = 2
+        steps = 1 if piece.moved else 2
 
+        start = row + piece.dir
+        finish = row + (piece.dir * (1 + steps))
+        
+        for move_row in range(start, finish, piece.dir):
+            if Square.in_range(move_row):
+                if self.squares[move_row][col].isempty():
+                    initial = Square(row, col)
+                    final = Square(move_row, col)
+                    move = Move(initial, final)
+                    piece.add_move(move)
+                else:
+                    break
+            else:
+                break
+
+        # diagonal movement
+        move_row = row + piece.dir
+        move_cols = [col-1, col+1]
+        for move_col in move_cols:
+            if Square.in_range(move_row, move_col):
+                if self.squares[move_row][move_col].has_rival_piece(piece.color):
+                    initial = Square(row, col)
+                    final = Square(move_row, move_col)
+                    move = Move(initial, final)
+                    piece.add_move(move)
 
     def calc_moves(self, piece, row, col):
         # calculate all valid moves of a piece
 
         if piece.name == 'pawn':
-            pass
+            self.pawn_moves(piece, row, col)
         elif piece.name == 'knight':
             self.knight_moves(piece, row, col)
 
@@ -74,6 +105,7 @@ class Board:
         # pawns
         for col in range(COLS):
             self.squares[row_pawn][col] = Square(row_pawn, col, Pawn(color))
+        self.squares[5][3] = Square(5, 3, Pawn(color))
 
         # knights
         self.squares[row_other][1] = Square(row_other, 1, Knight(color))
