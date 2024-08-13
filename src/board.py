@@ -11,6 +11,7 @@ class Board:
         self._create()
         self._add_pieces('white')
         self._add_pieces('black')
+        self.last_move = None
 
     def knight_moves(self, piece, row, col):
         possible_moves = [
@@ -161,6 +162,20 @@ class Board:
         elif piece.name == 'king':
             self.king_moves(piece, row, col)
 
+    def move(self, piece, move):
+        initial = move.initial
+        final = move.final
+
+        self.squares[initial.row][initial.col].piece = None
+        self.squares[final.row][final.col].piece = piece
+
+        piece.moved = True
+        piece.clear_moves()
+        self.last_move = move
+
+    def valid_move(self, piece, move):
+        return move in piece.moves
+
     def _create(self):
         # self.squares = [[0, 0, 0, 0, 0, 0, 0, 0] for col in range(COLS)]
         # print(self.squares)
@@ -202,7 +217,7 @@ class Board:
 
         # king
         self.squares[row_other][4] = Square(row_other, 4, King(color))
-        self.squares[5][3] = Square(5, 3, King(color))
+        # self.squares[5][3] = Square(5, 3, King(color))
 
 # b = Board()
 # b._create()

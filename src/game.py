@@ -8,6 +8,7 @@ class Game:
     def __init__(self):
         self.board = Board()
         self.dragger = Dragger()
+        self.next_player = 'white'
 
     # show methods
     def show_bg(self, surface):
@@ -51,3 +52,10 @@ class Game:
                 #    color = '#C84646' 
                 rect = (move.final.col * SQSIZE, move.final.row * SQSIZE, SQSIZE, SQSIZE)
                 pygame.draw.rect(surface, color, rect)
+
+    def next_turn(self):
+        self.next_player == 'white' if self.next_player == 'black' else 'black'
+        # if self.next_player == 'black':
+        #     self.next_player == 'white'
+        # else:
+        #     self.next_player == 'black'
