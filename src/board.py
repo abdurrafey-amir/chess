@@ -68,6 +68,63 @@ class Board:
                     move = Move(initial, final)
                     piece.add_move(move)
 
+    def other_moves(self, piece, row, col, increments):
+        for inc in increments:
+            row_inc, col_inc = inc
+            move_row = row + row_inc
+            move_col = col + col_inc
+
+            while True:
+                if Square.in_range(move_row, move_col):
+                    
+                    initial = Square(row, col)
+                    final = Square(move_row, move_col)
+
+                    move = Move(initial, final)
+
+                    if self.squares[move_row][move_col].isempty():
+                        piece.add_move(move)
+
+
+                    if self.squares[move_row][move_col].has_rival_piece(piece.color):
+                        piece.add_move(move)
+                        break
+
+                    if self.squares[move_row][move_col].has_team_piece(piece.color):
+                        break
+
+                else: 
+                    break
+
+                move_row, move_col = move_row + row_inc, move_col + col_inc
+
+    def king_moves(self, piece, row, col):
+        perp = [
+            (row-1, col+0),
+            (row-1, col-1),
+            (row-1, col+1),
+            (row+1, col+1),
+            (row+0, col+1),
+            (row+1, col-1),
+            (row+1, col+0),
+            (row+0, col-1)
+        ]
+
+        for move in perp:
+            
+            move_row, move_col = move
+
+            if Square.in_range(move_row, move_col):
+                if self.squares[move_row][move_col].isempty_or_rival(piece.color):
+                    initial = Square(row, col)
+                    final = Square(move_row, move_col)
+
+                    move = Move(initial, final)
+
+                    piece.add_move(move)
+
+
+
     def calc_moves(self, piece, row, col):
         # calculate all valid moves of a piece
 
@@ -77,13 +134,32 @@ class Board:
             self.knight_moves(piece, row, col)
 
         elif piece.name == 'bishop':
-            pass
+            self.other_moves(piece, row, col, [
+                (-1, 1),
+                (1, -1),
+                (-1, -1),
+                (1, 1)
+            ])
         elif piece.name == 'rook':
-            pass
+            self.other_moves(piece, row, col, [
+                (-1, 0),
+                (0, 1),
+                (1, 0),
+                (0, -1)
+            ])
         elif piece.name == 'queen':
-            pass
+            self.other_moves(piece, row, col, [
+                (-1, 1), # merge bishop and rook increments
+                (1, -1),
+                (-1, -1),
+                (1, 1),
+                (-1, 0),
+                (0, 1),
+                (1, 0),
+                (0, -1)
+            ])
         elif piece.name == 'king':
-            pass 
+            self.king_moves(piece, row, col)
 
     def _create(self):
         # self.squares = [[0, 0, 0, 0, 0, 0, 0, 0] for col in range(COLS)]
@@ -105,7 +181,7 @@ class Board:
         # pawns
         for col in range(COLS):
             self.squares[row_pawn][col] = Square(row_pawn, col, Pawn(color))
-        self.squares[5][3] = Square(5, 3, Pawn(color))
+        # self.squares[5][3] = Square(5, 3, Pawn(color))
 
         # knights
         self.squares[row_other][1] = Square(row_other, 1, Knight(color))
@@ -114,6 +190,8 @@ class Board:
         # bishops
         self.squares[row_other][2] = Square(row_other, 2, Bishop(color))
         self.squares[row_other][5] = Square(row_other, 5, Bishop(color))
+        # self.squares[5][7] = Square(5, 7, Bishop(color))
+        # self.squares[3][4] = Square(3, 4, Bishop(color))
 
         # rooks
         self.squares[row_other][0] = Square(row_other, 7, Rook(color))
@@ -124,6 +202,7 @@ class Board:
 
         # king
         self.squares[row_other][4] = Square(row_other, 4, King(color))
+        self.squares[5][3] = Square(5, 3, King(color))
 
 # b = Board()
 # b._create()
