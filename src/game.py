@@ -6,9 +6,10 @@ from dragger import Dragger
 class Game:
 
     def __init__(self):
+        self.next_player = 'white'
         self.board = Board()
         self.dragger = Dragger()
-        self.next_player = 'white'
+        
 
     # show methods
     def show_bg(self, surface):
@@ -53,9 +54,26 @@ class Game:
                 rect = (move.final.col * SQSIZE, move.final.row * SQSIZE, SQSIZE, SQSIZE)
                 pygame.draw.rect(surface, color, rect)
 
+    def show_last_move(self, surface):
+        if self.board.last_move:
+            initial = self.board.last_move.initial
+            final = self.board.last_move.final
+
+            for pos in [initial, final]:
+                color = (244, 247, 116) if (pos.row + pos.col) % 2 == 0 else (172, 195, 51)
+                # if (pos.row + pos.col) % 2 == 0:
+                #     color = (244, 247, 116)
+                # else:
+                #     color = (172, 195, 51)
+                rect = (pos.col * SQSIZE, pos.row * SQSIZE, SQSIZE, SQSIZE)
+                pygame.draw.rect(surface, color, rect)
+
+
+
+
     def next_turn(self):
-        self.next_player == 'white' if self.next_player == 'black' else 'black'
+        self.next_player = 'white' if self.next_player == 'black' else 'black'
         # if self.next_player == 'black':
-        #     self.next_player == 'white'
+        #     self.next_player = 'white'
         # else:
         #     self.next_player == 'black'
