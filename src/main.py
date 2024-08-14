@@ -92,7 +92,12 @@ class Main:
                         move = Move(initial, final)
 
                         if board.valid_move(dragger.piece, move):
+                            captured = board.squares[released_row][released_col].has_piece()
+                            
                             board.move(dragger.piece, move)
+                            
+                            # sound
+                            game.sound(captured)
 
                             game.show_bg(screen)
                             game.show_last_move(screen)
@@ -102,7 +107,9 @@ class Main:
 
                     dragger.undrag_piece()
                     
-                
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_t:
+                        game.change_theme()
                 # exit
                 if event.type == pygame.QUIT:
                     pygame.quit()
