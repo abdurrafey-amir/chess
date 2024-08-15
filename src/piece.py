@@ -31,6 +31,8 @@ class Pawn(Piece):
         #     self.dir = -1
         # else:
         #     self.dir = 1
+        # en passant
+        self.passant = False
         super().__init__('pawn', color, 1.0)
 
 class Knight(Piece):
